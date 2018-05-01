@@ -1,10 +1,13 @@
 import React from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import HaulInput from './HaulInput';
 
 function App() {
   return (
-    <HaulInput />
+    <MuiThemeProvider>
+      <HaulInput />
+    </MuiThemeProvider>
   );
 }
 
