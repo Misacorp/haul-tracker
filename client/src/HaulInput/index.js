@@ -24,8 +24,8 @@ const initialState = {
     seafarer: 0,
     marauder: 0,
     captain: 0,
-    sorrow: 0,
     grogs: 0,
+    sorrow: 0,
   },
 };
 
@@ -55,7 +55,7 @@ class HaulInput extends React.Component {
       <div style={styles.main}>
         <h1>HaulInput</h1>
         <VoyagePicker voyage={voyage} handleChange={this.handleChange} />
-        <HaulPicker haul={haul} />
+        <HaulPicker haul={haul} handleChange={this.handleChange} />
         <Identity />
 
         <h2>State:</h2>
@@ -72,8 +72,8 @@ class HaulInput extends React.Component {
           Seafarer: {haul.seafarer} <br />
           Marauder: {haul.marauder} <br />
           Captain: {haul.captain} <br />
-          Sorrows: {haul.sorrow} <br />
           Thousand Grogs: {haul.grogs} <br />
+          Sorrows: {haul.sorrow} <br />
         </p>
       </div>
 

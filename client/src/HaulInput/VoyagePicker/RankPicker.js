@@ -46,7 +46,7 @@ function RankPicker(props) {
         value={rank}
         onChange={(event, index, value) => props.handleChange(event, value)}
       >
-        {ranks.map((item, index) => <MenuItem value={index * 5} primaryText={`${item} (lvl ${index * 5})`} />)}
+        {ranks.map((item, index) => <MenuItem value={index * 5} primaryText={`${item} (lvl ${index * 5})`} key={item} />)}
       </SelectField>
     </div>
   );
