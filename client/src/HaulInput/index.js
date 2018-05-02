@@ -27,6 +27,10 @@ const initialState = {
     grogs: 0,
     sorrow: 0,
   },
+  identity: {
+    username: '',
+    password: '',
+  },
 };
 
 class HaulInput extends React.Component {
@@ -38,25 +42,26 @@ class HaulInput extends React.Component {
 
   handleChange(obj) {
     // Get state's properties from incoming change
-    const { haul, voyage } = obj;
+    const { haul, identity, voyage } = obj;
 
     // Update state if a value was changed
     const newState = {
-      voyage: voyage || this.state.voyage,
+      identity: identity || this.state.identity,
       haul: haul || this.state.haul,
+      voyage: voyage || this.state.voyage,
     };
     this.setState(newState);
   }
 
   render() {
-    const { haul, voyage } = this.state;
+    const { haul, identity, voyage } = this.state;
 
     return (
       <div style={styles.main}>
         <h1>HaulInput</h1>
         <VoyagePicker voyage={voyage} handleChange={this.handleChange} />
         <HaulPicker haul={haul} handleChange={this.handleChange} />
-        <Identity />
+        <Identity identity={identity} handleChange={this.handleChange} />
 
         <h2>State:</h2>
 
@@ -73,7 +78,12 @@ class HaulInput extends React.Component {
           Marauder: {haul.marauder} <br />
           Captain: {haul.captain} <br />
           Thousand Grogs: {haul.grogs} <br />
-          Sorrows: {haul.sorrow} <br />
+        </p>
+
+        <h3>Identity</h3>
+        <p>
+          Username: {identity.username} <br />
+          Password: {identity.password}
         </p>
       </div>
 

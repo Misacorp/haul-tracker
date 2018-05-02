@@ -13,6 +13,9 @@ const styles = {
     padding: '1em',
     marginBottom: '1em',
   },
+  center: {
+    textAlign: 'center',
+  },
 };
 
 /**
@@ -27,7 +30,7 @@ function VoyagePicker(props) {
 
   return (
     <div style={styles.main}>
-      <p>VoyagePicker</p>
+      <h2 style={styles.center}>Voyage</h2>
 
       <CompanyPicker
         company={voyage.company}

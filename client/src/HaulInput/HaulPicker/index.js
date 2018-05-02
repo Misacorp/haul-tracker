@@ -17,6 +17,9 @@ const styles = {
     padding: '1em',
     marginBottom: '1em',
   },
+  center: {
+    textAlign: 'center',
+  },
 };
 
 /**
@@ -34,6 +37,8 @@ function HaulPicker(props) {
 
   return (
     <div style={styles.main} >
+      <h2 style={styles.center}>Haul</h2>
+
       <ChestInput
         image={Castaway}
         text="Castaway&#39;s chest"
