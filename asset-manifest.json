@@ -1,9 +1,10 @@
 {
   "main.css": "static/css/main.65027555.css",
   "main.css.map": "static/css/main.65027555.css.map",
-  "main.js": "static/js/main.a190b731.js",
-  "main.js.map": "static/js/main.a190b731.js.map",
+  "main.js": "static/js/main.f2687e66.js",
+  "main.js.map": "static/js/main.f2687e66.js.map",
   "static/media/castaway.png": "static/media/castaway.d722c554.png",
+  "static/media/defaultTreasure.png": "static/media/defaultTreasure.f9353636.png",
   "static/media/marauder.png": "static/media/marauder.ded9be85.png",
   "static/media/seafarer.png": "static/media/seafarer.13091749.png"
 }
