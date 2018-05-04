@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField';
 
 const styles = {
   main: {
-    borderTop: '4px solid #F63',
+    borderTop: '4px solid #00BCD4',
     borderRadius: '4px',
     boxShadow: '3px 3px 5px rgba(0,0,0,0.15)',
     backgroundColor: 'white',
@@ -18,7 +18,7 @@ const styles = {
   },
 };
 
-function Identity(props) {
+function IdentityInput(props) {
   const { username, password } = props.identity;
 
   return (
@@ -56,7 +56,7 @@ function Identity(props) {
   );
 }
 
-Identity.propTypes = {
+IdentityInput.propTypes = {
   identity: PropTypes.shape({
     username: PropTypes.string,
     password: PropTypes.string,
@@ -64,7 +64,7 @@ Identity.propTypes = {
   handleChange: PropTypes.func,
 };
 
-Identity.defaultProps = {
+IdentityInput.defaultProps = {
   identity: {
     username: '',
     password: '',
@@ -72,4 +72,4 @@ Identity.defaultProps = {
   handleChange: () => console.log('Identity value changed'),
 };
 
-export default Identity;
+export default IdentityInput;

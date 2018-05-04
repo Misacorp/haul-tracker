@@ -6,7 +6,7 @@ import RankPicker from './RankPicker';
 
 const styles = {
   main: {
-    borderTop: '4px solid #F63',
+    borderTop: '4px solid #00BCD4',
     borderRadius: '4px',
     boxShadow: '3px 3px 5px rgba(0,0,0,0.15)',
     backgroundColor: 'white',

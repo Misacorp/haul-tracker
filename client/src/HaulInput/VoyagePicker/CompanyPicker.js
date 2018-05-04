@@ -14,11 +14,11 @@ function CompanyPicker(props) {
         onChange={props.handleChange}
       >
         <RadioButton
-          value="gold_hoarders"
+          value="goldHoarders"
           label="Gold Hoarders"
         />
         <RadioButton
-          value="order_of_souls"
+          value="orderOfSouls"
           label="Order of Souls"
         />
       </RadioButtonGroup>

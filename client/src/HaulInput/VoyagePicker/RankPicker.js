@@ -7,7 +7,7 @@ function RankPicker(props) {
   const { company, rank } = props;
 
   let ranks;
-  if (company === 'gold_hoarders') {
+  if (company === 'goldHoarders') {
     ranks = [
       'Unranked',
       'Gold Picaroon',
@@ -21,7 +21,7 @@ function RankPicker(props) {
       'Gold Sovereign',
       'Master Gold Hoarder',
     ];
-  } else if (company === 'order_of_souls') {
+  } else if (company === 'orderOfSouls') {
     ranks = [
       'Unranked',
       'Mystic Follower',
@@ -59,7 +59,7 @@ RankPicker.propTypes = {
 };
 
 RankPicker.defaultProps = {
-  company: 'gold_hoarders',
+  company: 'goldHoarders',
   rank: 0,
   handleChange: () => console.log('Company picked'),
 };

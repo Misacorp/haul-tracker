@@ -4,13 +4,13 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Add from 'material-ui/svg-icons/content/add';
 import Remove from 'material-ui/svg-icons/content/remove';
 
-import DefaultImage from './assets/img/castaway.png';
+import DefaultImage from './assets/img/defaultTreasure.png';
 
 /**
  * Display a chest and controls to change its count.
  * @param {object} props See PropTypes for React component's prop definition
  */
-function ChestInput(props) {
+function TreasureInput(props) {
   const {
     image,
     text,
@@ -63,7 +63,7 @@ function ChestInput(props) {
   );
 }
 
-ChestInput.propTypes = {
+TreasureInput.propTypes = {
   image: PropTypes.string,
   text: PropTypes.string,
   columns: PropTypes.number,
@@ -71,7 +71,7 @@ ChestInput.propTypes = {
   count: PropTypes.number,
 };
 
-ChestInput.defaultProps = {
+TreasureInput.defaultProps = {
   image: DefaultImage,
   text: 'Castaway&#39;s chest',
   columns: 1,
@@ -79,4 +79,4 @@ ChestInput.defaultProps = {
   count: 0,
 };
 
-export default ChestInput;
+export default TreasureInput;
