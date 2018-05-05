@@ -7,10 +7,13 @@ import Haul from './dataTypes/Haul';
 import Voyage from './dataTypes/Voyage';
 import Identity from './dataTypes/Identity';
 
+import Result from './Result';
 import Story from './Story';
 import VoyagePicker from './VoyagePicker';
 import HaulPicker from './HaulPicker';
 import IdentityInput from './IdentityInput';
+
+import submitHaul from './submitHaul';
 
 const styles = {
   main: {
@@ -38,6 +41,13 @@ const styles = {
     height: '5em',
     marginTop: '2em',
   },
+  result: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    display: 'block',
+    textAlign: 'center',
+    marginTop: '1em',
+  },
 };
 
 // Fresh new state
@@ -45,6 +55,9 @@ const initialState = {
   voyage: new Voyage(),
   haul: new Haul(),
   identity: new Identity(),
+  error: null,
+  response: null,
+  isSending: false,
 };
 
 class HaulInput extends React.Component {
@@ -59,7 +72,45 @@ class HaulInput extends React.Component {
    * Submits the form.
    */
   handleSubmit() {
-    console.log(this.state);
+    // Clear existing errors and responses. Set sending to true.
+    this.setState({
+      ...this.state,
+      error: null,
+      response: null,
+      isSending: true,
+    });
+
+    // const wrongData = {
+    //   ...this.state,
+    //   voyage: {
+    //     company: 'goldHoarders',
+    //     rank: '45',
+    //   },
+    // };
+
+    const rightData = this.state;
+
+    // Send data to server.
+    submitHaul(rightData)
+      .then((res) => {
+        // Submission was successful.
+        // Reset state and display response.
+        this.setState({
+          ...initialState,
+          response: res,
+        });
+      })
+      .catch((e) => {
+        // There was an error sending data. Display it.
+        this.setState({
+          ...this.state,
+          error: `Could not send: ${e.message}`,
+        });
+      })
+      .then(() => {
+        // Finally remove sending state regardless of outcome
+        this.setState({ ...this.state, isSending: false });
+      });
   }
 
   /**
@@ -72,6 +123,7 @@ class HaulInput extends React.Component {
 
     // Update state if a value was changed
     const newState = {
+      ...this.state,
       identity: identity ? new Identity(identity) : this.state.identity,
       haul: haul ? new Haul(haul) : this.state.haul,
       voyage: voyage ? new Voyage(voyage) : this.state.voyage,
@@ -96,12 +148,19 @@ class HaulInput extends React.Component {
           label="Submit haul"
           labelPosition="before"
           primary
-          // backgroundColor="#00BCD4"
+          disabled={this.state.isSending}
           style={styles.submitButton}
           buttonStyle={{ lineHeight: '5em' }}
           labelStyle={{ color: 'white', fontWeight: 'bold' }}
           icon={<SendIcon color="white" />}
           onClick={this.handleSubmit}
+        />
+
+        <Result
+          error={this.state.error}
+          response={this.state.response}
+          isSending={this.state.isSending}
+          style={styles.result}
         />
 
         <div style={styles.state} >
