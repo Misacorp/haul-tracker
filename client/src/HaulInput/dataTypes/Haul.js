@@ -16,6 +16,38 @@ class Haul {
 
 
   /**
+   * Gets the real name of a treasure type.
+   * @param {string} key Key whose real name to get
+   */
+  static getRealName(key, isPlural) {
+    switch (key) {
+      case 'castaway':
+        return isPlural ? 'Castaway\'s chests' : 'Castaway\'s chest';
+      case 'seafarer':
+        return isPlural ? 'Seafarer\'s chests' : 'Seafarer\'s chest';
+      case 'marauder':
+        return isPlural ? 'Marauder\'s chests' : 'Marauder\'s chest';
+      case 'captain':
+        return isPlural ? 'Captain\'s chests' : 'Captain\'s chest';
+      case 'grogs':
+        return isPlural ? 'Chests of a Thousand Grogs' : 'Chest of a Thousand Grogs';
+      case 'sorrow':
+        return isPlural ? 'Chests of Sorrow' : 'Chest of Sorrow';
+      case 'foul':
+        return isPlural ? 'Foul Bounty Skulls' : 'Foul Bounty Skull';
+      case 'disgraced':
+        return isPlural ? 'Disgraced Bounty Skulls' : 'Disgraced Bounty Skull';
+      case 'hateful':
+        return isPlural ? 'Hateful Bounty Skulls' : 'Hateful Bounty Skull';
+      case 'villainous':
+        return isPlural ? 'Villainous Bounty Skulls' : 'Villainous Bounty Skull';
+      default:
+        return '[NO TREASURE SPECIFIED]';
+    }
+  }
+
+
+  /**
    * Constructs a new haul.
    * @param {object} data Haul data
    *

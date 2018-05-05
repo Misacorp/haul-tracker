@@ -7,6 +7,7 @@ import Haul from './dataTypes/Haul';
 import Voyage from './dataTypes/Voyage';
 import Identity from './dataTypes/Identity';
 
+import Story from './Story';
 import VoyagePicker from './VoyagePicker';
 import HaulPicker from './HaulPicker';
 import IdentityInput from './IdentityInput';
@@ -89,6 +90,7 @@ class HaulInput extends React.Component {
         <HaulPicker haul={haul} company={voyage.company} handleChange={this.handleChange} />
         <IdentityInput identity={identity} handleChange={this.handleChange} />
 
+        <Story voyage={this.state.voyage} haul={this.state.haul} />
 
         <RaisedButton
           label="Submit haul"

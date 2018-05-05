@@ -40,6 +40,20 @@ class Voyage {
       this.rank = defaultRank;
     }
   }
+
+  /**
+   * Gets real name of this company.
+   */
+  getCompanyName() {
+    switch (this.company) {
+      case 'goldHoarders':
+        return 'Gold Hoarders';
+      case 'orderOfSouls':
+        return 'Order of Souls';
+      default:
+        return '[NO COMPANY SELECTED]';
+    }
+  }
 }
 
 export default Voyage;
