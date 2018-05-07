@@ -33,6 +33,13 @@ functions:
           path: users
           method: post
           cors: true
+  read:
+    handler: users/read.read
+    events:
+      - http:
+          path: users
+          method: get
+          cors: true
 
 resources:
   Resources:

@@ -22,7 +22,7 @@ const create = (event, context, callback) => {
   if (!username) {
     // Assign the user a random username.
     // animalName returns a promise so we'll need to wait for these to resolve later.
-    username = animalName({ format: 'camel', adjectives: 1 });
+    username = animalName({ format: 'pascal', adjectives: 1 });
   }
 
   // Set password
@@ -30,7 +30,7 @@ const create = (event, context, callback) => {
   if (!password) {
     // Assign the user a random password.
     // animalName returns a promise so we'll need to wait for these to resolve later.
-    password = animalName({ format: 'camel', adjectives: 2 });
+    password = animalName({ format: 'pascal', adjectives: 2 });
   }
 
   // When this entry was created (and updated).
@@ -42,7 +42,7 @@ const create = (event, context, callback) => {
       // Username and password resolved into the 'values' parameter: [username, password]
       // Set parameters for DynamoDB request.
       const params = {
-        TableName: 'users',
+        TableName: 'users',       // Which table to use
         Item: new User({
           id: uuid(),
           username: values[0],    // Username from resolved promise values
