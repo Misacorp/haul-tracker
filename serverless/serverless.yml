@@ -8,6 +8,8 @@ provider:
   name: aws
   runtime: nodejs6.10
   profile: misa
+  stage: dev-cognito
+  region: eu-west-1
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -19,11 +21,6 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: 'arn:aws:dynamodb:eu-west-1:*:*'
-
-
-# you can overwrite defaults here
-  stage: dev
-  region: eu-west-1
 
 functions:
   create:
@@ -55,11 +52,11 @@ resources:
       Properties:
         IdentityPoolName: haulTrackerIdentityPool
         AllowUnauthenticatedIdentities: false
-        CognitoIdentityproviders:
+        CognitoIdentityProviders:
           - ClientId:
               Ref: CognitoUserPoolClient
             ProviderName:
-              fn::GetAtt: [CognitoUserPool, ProviderName]
+              Fn::GetAtt: [CognitoUserPool, ProviderName]
     # Cognito - Roles
     CognitoIdentityPoolRoles:
       Type: AWS::Cognito::IdentityPoolRoleAttachment
@@ -136,19 +133,19 @@ resources:
                     - "cognito-identity:*"
                   Resource: "*"
     # DynamoDB - Tables
-    UsersDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: 'users'
+    # UsersDynamoDBTable:
+    #   Type: 'AWS::DynamoDB::Table'
+    #   DeletionPolicy: Retain
+    #   Properties:
+    #     AttributeDefinitions:
+    #       -
+    #         AttributeName: id
+    #         AttributeType: S
+    #     KeySchema:
+    #       -
+    #         AttributeName: id
+    #         KeyType: HASH
+    #     ProvisionedThroughput:
+    #       ReadCapacityUnits: 1
+    #       WriteCapacityUnits: 1
+    #     TableName: 'users'
