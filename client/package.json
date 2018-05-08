@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://misacorp.github.io/haul-tracker",
   "dependencies": {
+    "aws-amplify": "^0.3.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "material-ui": "^0.20.0",

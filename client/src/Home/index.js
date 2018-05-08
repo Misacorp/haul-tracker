@@ -8,7 +8,6 @@ function Home() {
       <h1>Haul Tracker</h1>
       <p>Keep your voyages in order and treasures logged.</p>
 
-      <h2>Login</h2>
       <LoginRegister />
     </div>
   );

@@ -39,7 +39,7 @@ class App extends Component {
   handleClose(newPath) {
     // Close drawer
     this.setState({ drawerOpen: false });
-    // Navigate to the to prop
+    // Navigate to newPath if we're not already there
     if (this.props.location.pathname !== newPath) {
       this.props.history.push(newPath);
     }
