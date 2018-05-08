@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
@@ -16,6 +17,10 @@ const styles = {
     marginLeft: 'auto',
     marginRight: 'auto',
   },
+  active: {
+    borderLeft: '7px solid #00BCD4',
+    backgroundColor: '#E0FAFF',
+  },
 };
 
 
@@ -31,11 +36,18 @@ class App extends Component {
     this.setState({ drawerOpen: !this.state.drawerOpen });
   }
 
-  handleClose() {
+  handleClose(newPath) {
+    // Close drawer
     this.setState({ drawerOpen: false });
+    // Navigate to the to prop
+    if (this.props.location.pathname !== newPath) {
+      this.props.history.push(newPath);
+    }
   }
 
   render() {
+    const { pathname } = this.props.location;
+
     return (
       <MuiThemeProvider>
         <div style={styles.main} >
@@ -45,12 +57,12 @@ class App extends Component {
             open={this.state.drawerOpen}
             onRequestChange={drawerOpen => this.setState({ drawerOpen })}
           >
-            <Link to="/">
-              <MenuItem to="/" onClick={this.handleClose}>Login</MenuItem>
-            </Link>
-            <Link to="/newhaul">
-              <MenuItem onClick={this.handleClose}>New haul</MenuItem>
-            </Link>
+            <MenuItem onClick={() => this.handleClose('/')} style={pathname === '/' ? styles.active : null} >
+              Home
+            </MenuItem>
+            <MenuItem onClick={() => this.handleClose('/newhaul')} style={pathname === '/newhaul' ? styles.active : null}>
+              New haul
+            </MenuItem>
           </Drawer>
 
           <AppBar
@@ -60,11 +72,13 @@ class App extends Component {
               this.props.location.pathname === '/newhaul' ?
                 <FlatButton
                   label="Home"
+                  secondary
                   icon={<HomeIcon />}
                   onClick={() => this.props.history.push('/')}
                 /> :
                 <FlatButton
                   label="New Haul"
+                  primary
                   icon={<AddIcon />}
                   onClick={() => this.props.history.push('/newhaul')}
                 />
@@ -79,5 +93,25 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+    replace: PropTypes.func,
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }),
+};
+
+App.defaultProps = {
+  history: {
+    push: null,
+    replace: null,
+  },
+  location: {
+    pathname: '/',
+  },
+};
 
 export default withRouter(App);
