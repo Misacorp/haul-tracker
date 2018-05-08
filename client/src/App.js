@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
+import FlatButton from 'material-ui/FlatButton';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
+import AddIcon from 'material-ui/svg-icons/content/add-circle';
+import HomeIcon from 'material-ui/svg-icons/action/home';
 
 import Routes from './Routes';
 
@@ -34,8 +37,8 @@ class App extends Component {
 
   render() {
     return (
-      <div style={styles.main} >
-        <MuiThemeProvider>
+      <MuiThemeProvider>
+        <div style={styles.main} >
           <Drawer
             docked={false}
             width={200}
@@ -52,16 +55,29 @@ class App extends Component {
 
           <AppBar
             title="Haul Tracker"
-            onClick={this.handleToggle}
+            onLeftIconButtonClick={this.handleToggle}
+            iconElementRight={
+              this.props.location.pathname === '/newhaul' ?
+                <FlatButton
+                  label="Home"
+                  icon={<HomeIcon />}
+                  onClick={() => this.props.history.push('/')}
+                /> :
+                <FlatButton
+                  label="New Haul"
+                  icon={<AddIcon />}
+                  onClick={() => this.props.history.push('/newhaul')}
+                />
+            }
           />
 
           <div style={styles.main}>
             <Routes />
           </div>
-        </MuiThemeProvider>
-      </div>
+        </div>
+      </MuiThemeProvider>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

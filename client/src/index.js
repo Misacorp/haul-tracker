@@ -6,7 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
 ReactDOM.render(
-  <Router>
+  <Router basename="/haul-tracker">
     <App />
   </Router>,
   document.getElementById('root'),
