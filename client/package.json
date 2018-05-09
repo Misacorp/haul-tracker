@@ -4,12 +4,14 @@
   "private": true,
   "homepage": "https://misacorp.github.io/haul-tracker",
   "dependencies": {
+    "aws-amplify": "^0.3.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "material-ui": "^0.20.0",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "^1.1.4",
     "react-sizeme": "^2.4.3",
     "react-style-proptype": "^3.2.1"
