@@ -3,6 +3,7 @@ import { Auth } from 'aws-amplify';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from 'material-ui/CircularProgress';
 
 const styles = {
   main: {
@@ -39,6 +40,7 @@ const styles = {
 const initialState = {
   username: '',
   password: '',
+  isLoading: false,
 };
 
 class LoginRegister extends React.Component {
@@ -71,12 +73,18 @@ class LoginRegister extends React.Component {
   async handleSubmit(event) {
     event.preventDefault();
     const { username, password } = this.state;
+    const { props } = this.props; // Destructure props object
+
+    this.setState({ isLoading: true });
 
     try {
       await Auth.signIn(username, password);
-      console.log('Logged in');
+      props.userHasAuthenticated(true);
+      this.setState({ isLoading: false });
+      props.history.push('/newhaul');
     } catch (e) {
       console.log(e);
+      this.setState({ isLoading: false });
     }
   }
 
@@ -110,7 +118,7 @@ class LoginRegister extends React.Component {
 
 
   render() {
-    const { username, password } = this.state;
+    const { username, password, isLoading } = this.state;
 
     return (
       <div style={styles.main}>
@@ -151,6 +159,7 @@ class LoginRegister extends React.Component {
                 disabled={!this.validateForm()}
                 style={styles.button}
               />
+              {isLoading ? <CircularProgress /> : null }
             </div>
           </form>
         </div>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Auth } from 'aws-amplify';
 import { withRouter } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
@@ -27,9 +28,33 @@ const styles = {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: false };
+    this.state = {
+      drawerOpen: false,
+      isAuthenticated: false,
+      isAuthenticating: true,
+    };
     this.handleToggle = this.handleToggle.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.userHasAuthenticated = this.userHasAuthenticated.bind(this);
+  }
+
+
+  /**
+   * Check if session is still valid on component mount (?)
+   */
+  async componentDidMount() {
+    try {
+      if (await Auth.currentSession()) {
+        this.userHasAuthenticated(true);
+      }
+    } catch (e) {
+      if (e !== 'No current user') {
+        alert(e);
+      }
+    }
+
+    this.setState({ isAuthenticating: false });
   }
 
   handleToggle() {
@@ -45,8 +70,37 @@ class App extends Component {
     }
   }
 
+  /**
+   * Sets user authentication state
+   * @param {boolean} authenticated Is the user authenticated?
+   */
+  userHasAuthenticated(authenticated) {
+    this.setState({ isAuthenticated: authenticated });
+  }
+
+
+  /**
+   * Handle logout
+   * @param {boolean} event Logout event
+   */
+  async handleLogout() {
+    await Auth.signOut();
+
+    this.userHasAuthenticated(false);
+    this.props.history.push('/');
+    this.handleClose();
+  }
+
+
   render() {
     const { pathname } = this.props.location;
+
+    // Auth checking functions for children
+    const childProps = {
+      isAuthenticated: this.state.isAuthenticated,
+      userHasAuthenticated: this.userHasAuthenticated,
+      history: this.props.history,
+    };
 
     return (
       <MuiThemeProvider>
@@ -62,6 +116,9 @@ class App extends Component {
             </MenuItem>
             <MenuItem onClick={() => this.handleClose('/newhaul')} style={pathname === '/newhaul' ? styles.active : null}>
               New haul
+            </MenuItem>
+            <MenuItem onClick={() => this.handleLogout()}>
+              Logout
             </MenuItem>
           </Drawer>
 
@@ -85,8 +142,10 @@ class App extends Component {
             }
           />
 
+          <p>Logged in: {this.state.isAuthenticated ? 'yes' : 'no'}.</p>
+
           <div style={styles.main}>
-            <Routes />
+            <Routes childProps={childProps} />
           </div>
         </div>
       </MuiThemeProvider>
