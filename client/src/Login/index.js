@@ -1,5 +1,7 @@
 import React from 'react';
 import { Auth } from 'aws-amplify';
+import { validate as validateEmail } from 'email-validator';
+
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -43,7 +45,7 @@ const initialState = {
   isLoading: false,
 };
 
-class LoginRegister extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = initialState;
@@ -78,13 +80,21 @@ class LoginRegister extends React.Component {
     this.setState({ isLoading: true });
 
     try {
+      // Sign in with AWS Amplify / Cognito
       await Auth.signIn(username, password);
+
+      // Update app authentication state and redirect to home
       props.userHasAuthenticated(true);
-      this.setState({ isLoading: false });
-      props.history.push('/newhaul');
+      props.history.push('/');
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.setState({ isLoading: false });
+
+      if (e.code === 'UserNotConfirmedException') {
+        // User has signed up but not confirmed their registration
+        // Give them a chance to input username and confirmation code
+        props.history.push('/register');
+      }
     }
   }
 
@@ -113,7 +123,7 @@ class LoginRegister extends React.Component {
 
       return value.length <= MAXLENGTH && value.length >= MINLENGTH;
     }
-    return isValid(username) && isValid(password);
+    return validateEmail(username) && isValid(password);
   }
 
 
@@ -126,8 +136,8 @@ class LoginRegister extends React.Component {
           <h2>Login</h2>
           <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
             <TextField
-              floatingLabelText="Username"
-              hintText="Who are you?"
+              floatingLabelText="Email"
+              hintText="An address you can verify"
               name="username"
               value={username}
               onChange={this.handleChange}
@@ -168,4 +178,4 @@ class LoginRegister extends React.Component {
   }
 }
 
-export default LoginRegister;
+export default Login;

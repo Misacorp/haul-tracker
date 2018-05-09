@@ -1,17 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import LoginRegister from './LoginRegister';
-
 function Home({ props }) {
   const { isAuthenticated } = props;
 
-  return (
+  const intro = (
     <div>
       <h1>Haul Tracker</h1>
       <p>Keep your voyages in order and treasures logged.</p>
+    </div>
+  );
 
-      {isAuthenticated ? 'You are logged in. Welcome!' : <LoginRegister props={props} />}
+  return (
+    <div>
+      {intro}
+      {isAuthenticated ? 'You are logged in. Welcome!' : 'Log in to use Haul Tracker'}
     </div>
   );
 }
@@ -21,6 +24,7 @@ Home.propTypes = {
     isAuthenticated: PropTypes.bool,
     userHasAuthenticated: PropTypes.func,
   }),
+  isAuthenticated: PropTypes.bool,
 };
 
 Home.defaultProps = {
@@ -28,6 +32,7 @@ Home.defaultProps = {
     isAuthenticated: false,
     userHasAuthenticated: () => false,
   },
+  isAuthenticated: false,
 };
 
 export default Home;
