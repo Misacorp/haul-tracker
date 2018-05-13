@@ -10,10 +10,7 @@ import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
 const initialState = {
-  username: '',
-  password: '',
   confirmPassword: '',
-  confirmationCode: '',
   isLoading: false,
   newUser: null,
 };
@@ -24,7 +21,6 @@ class Register extends React.Component {
     this.state = initialState;
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleConfirmationSubmit = this.handleConfirmationSubmit.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
 
@@ -51,58 +47,30 @@ class Register extends React.Component {
 
     // Show loading indicator
     this.setState({ isLoading: true });
+    this.props.clearResult();
 
-    // Grab some values from state
-    const { username, password } = this.state;
+    // Grab some values from props
+    const { username, password } = this.props;
 
     try {
       // Sign up with AWS Amplify / Cognito
-      const newUser = await Auth.signUp({
+      await Auth.signUp({
         username,
         password,
         attributes: {
           email: username,
         },
       });
-
-      // Update state with the returned user object
-      this.setState({
-        newUser,
-      });
-    } catch (e) {
-      // Pass error to parent component.
-      this.props.handleError(e);
-    }
-
-    // Remove loading indicator
-    this.setState({ isLoading: false });
-  }
-
-
-  /**
-   * Handle what happens when confirmation code is submitted
-   * @param {object} event Form submit event
-   */
-  async handleConfirmationSubmit(event) {
-    event.preventDefault();
-
-    const { username, password, confirmationCode } = this.state;
-    const { props } = this.props; // Destructure props object
-
-    // Show loading indicator
-    this.setState({ isLoading: true });
-
-    try {
-      // Confirm registration and sign in
-      await Auth.confirmSignUp(username, confirmationCode);
-      await Auth.signIn(username, password);
-
-      // Update app authentication state and redirect to home
-      props.userHasAuthenticated(true);
-      props.history.push('/');
-    } catch (e) {
-      // Pass error to parent component.
+      // Remove loading indicator
       this.setState({ isLoading: false });
+
+      // Go to confirmation
+      this.props.history.push('/confirm');
+    } catch (e) {
+      // Remove loading indicator
+      this.setState({ isLoading: false });
+
+      // Pass error to parent component.
       this.props.handleError(e);
     }
   }
@@ -113,6 +81,7 @@ class Register extends React.Component {
    */
   handleReset() {
     this.setState(initialState);
+    this.props.resetForm();
   }
 
 
@@ -120,7 +89,8 @@ class Register extends React.Component {
    * Checks if the form is valid.
    */
   validateForm() {
-    const { username, password, confirmPassword } = this.state;
+    const { username, password } = this.props;
+    const { confirmPassword } = this.state;
 
     /**
      * Checks a single string's validity.
@@ -137,21 +107,11 @@ class Register extends React.Component {
 
 
   /**
-   * Check if confirmation form is valid
-   */
-  validateConfirmationForm() {
-    return this.state.confirmationCode.length > 0;
-  }
-
-
-  /**
    * Render registration form
    */
   renderForm() {
-    const { styles } = this.props;
+    const { username, password, styles } = this.props;
     const {
-      username,
-      password,
       confirmPassword,
       isLoading,
     } = this.state;
@@ -167,7 +127,7 @@ class Register extends React.Component {
                 hintText="An address you can verify"
                 name="username"
                 value={username}
-                onChange={this.handleChange}
+                onChange={this.props.handleChange}
                 style={styles.input}
               />
               <TextField
@@ -176,7 +136,7 @@ class Register extends React.Component {
                 name="password"
                 type="password"
                 value={password}
-                onChange={this.handleChange}
+                onChange={this.props.handleChange}
                 style={styles.input}
               />
               <TextField
@@ -216,57 +176,16 @@ class Register extends React.Component {
   }
 
 
-  /**
-   * Render confirm registration form
-   */
-  renderConfirmationForm() {
-    const { styles } = this.props;
-    const {
-      confirmationCode,
-      isLoading,
-    } = this.state;
-
-    return (
-      <div style={styles.form}>
-        <h2>Confirm registration</h2>
-        <form onSubmit={this.handleConfirmationSubmit} >
-          <TextField
-            floatingLabelText="Confirmation code"
-            hintText="Check your email"
-            name="confirmationCode"
-            value={confirmationCode}
-            onChange={this.handleChange}
-            style={styles.input}
-            type="tel"
-          />
-          <div style={styles.buttonContainer}>
-            <RaisedButton
-              label="Confirm registration"
-              primary
-              type="submit"
-              disabled={!this.validateConfirmationForm()}
-              style={styles.button}
-            />
-            {isLoading ? <CircularProgress /> : null}
-          </div>
-        </form>
-      </div>
-    );
-  }
-
-
   render() {
-    const { styles } = this.props;
-
     return (
-      <div style={styles.main}>
-        {this.state.newUser === null ? this.renderForm() : this.renderConfirmationForm()}
-      </div>
+      this.renderForm()
     );
   }
 }
 
 Register.propTypes = {
+  username: PropTypes.string,
+  password: PropTypes.string,
   styles: PropTypes.shape({
     main: stylePropType,
     form: stylePropType,
@@ -277,14 +196,26 @@ Register.propTypes = {
       disabled: stylePropType,
     }),
   }),
+  handleChange: PropTypes.func,
   handleError: PropTypes.func,
+  resetForm: PropTypes.func,
   result: PropTypes.element,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
 };
 
 Register.defaultProps = {
+  username: '',
+  password: '',
   styles: null,
+  handleChange: null,
   handleError: null,
+  resetForm: null,
   result: null,
+  history: {
+    push: null,
+  },
 };
 
 export default Register;

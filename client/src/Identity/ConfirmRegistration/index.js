@@ -32,15 +32,16 @@ class ConfirmRegistration extends React.Component {
 
     // Show loading indicator
     this.setState({ isLoading: true });
+    this.props.clearResult();
 
     try {
       // Confirm registration
       await Auth.confirmSignUp(username, confirmationCode);
       await Auth.signIn(username, password);
 
-      // Update app authentication state and redirect to sign in page
-      props.userHasAuthenticated(true);
-      props.history.push('/login');
+      // Update app authentication state and redirect to homepage
+      props.loginState.userHasAuthenticated(true);
+      props.history.push('/');
     } catch (e) {
       this.setState({ isLoading: false });
       this.props.handleError(e);

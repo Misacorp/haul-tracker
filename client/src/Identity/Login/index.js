@@ -31,6 +31,7 @@ class Login extends React.Component {
     const { username, password } = this.props;
 
     this.setState({ isLoading: true });
+    this.props.clearResult();
 
     try {
       // Sign in with AWS Amplify / Cognito
@@ -111,6 +112,7 @@ class Login extends React.Component {
                   labelStyle={(username || password) ? styles.reset.active : styles.reset.disabled}
                   backgroundColor="#FFFFFF"
                   hoverColor="#EEEEEE"
+                  onClick={this.props.resetForm}
                 />
                 <RaisedButton
                   label="Log In"
@@ -152,6 +154,7 @@ Login.propTypes = {
     isAuthenticated: PropTypes.bool,
     userHasAuthenticated: PropTypes.func,
   }),
+  resetForm: PropTypes.func,
   result: PropTypes.element,
 };
 
@@ -168,6 +171,7 @@ Login.defaultProps = {
     isAuthenticated: false,
     userHasAuthenticated: null,
   },
+  resetForm: null,
   result: null,
 };
 

@@ -81,8 +81,33 @@ class Identity extends React.Component {
     // Bind functions
     this.handleChange = this.handleChange.bind(this);
     this.handleError = this.handleError.bind(this);
+    this.resetForm = this.resetForm.bind(this);
+    this.clearResult = this.clearResult.bind(this);
   }
 
+  /**
+   * Resets form fields to their initial states.
+   */
+  resetForm() {
+    this.setState({
+      username: initialState.username,
+      password: initialState.password,
+      confirmationCode: initialState.confirmationCode,
+    });
+  }
+
+
+  /**
+   * Clears current result
+   */
+  clearResult() {
+    return new Promise((resolve) => {
+      this.setState(
+        { result: initialState.result },
+        resolve(),
+      );
+    });
+  }
 
   /**
    * Handle changes in text inputs
@@ -121,10 +146,8 @@ class Identity extends React.Component {
           recommendation: 'Create an account to start tracking your hauls.',
           action: 'Register',
           onClick: () => {
-            this.setState(
-              { result: initialState.result },
-              () => this.props.history.push('/register'),
-            );
+            this.clearResult()
+              .then(() => this.props.history.push('/register'));
           },
         };
         break;
@@ -136,10 +159,8 @@ class Identity extends React.Component {
           recommendation: 'Check your email for a verification code to confirm your registration.',
           action: 'Enter code',
           onClick: () => {
-            this.setState(
-              { result: initialState.result },
-              () => this.props.history.push('/confirm'),
-            );
+            this.clearResult()
+              .then(() => this.props.history.push('/confirm'));
           },
         };
         break;
@@ -176,8 +197,11 @@ class Identity extends React.Component {
               : null}
             loginState={this.props.loginState}
             styles={styles}
+            history={this.props.history}
             handleChange={this.handleChange}
             handleError={this.handleError}
+            resetForm={this.resetForm}
+            clearResult={this.clearResult}
           />
         );
       case '/confirm':
@@ -192,6 +216,7 @@ class Identity extends React.Component {
             styles={styles}
             handleChange={this.handleChange}
             handleError={this.handleError}
+            clearResult={this.clearResult}
           />
         );
       default:
@@ -207,6 +232,8 @@ class Identity extends React.Component {
             history={this.props.history}
             handleChange={this.handleChange}
             handleError={this.handleError}
+            resetForm={this.resetForm}
+            clearResult={this.clearResult}
           />
         );
     }
