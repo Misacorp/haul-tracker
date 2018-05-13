@@ -3,39 +3,39 @@ import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 
 import Home from './Home';
-import Login from './Login';
-import Register from './Register';
-import ConfirmRegistration from './ConfirmRegistration';
+import Identity from './Identity';
 import HaulInput from './HaulInput';
 import NotFound from './NotFound';
 
 function Routes(props) {
+  const { loginState } = props;
+
   return (
     <Switch>
       <Route
         path="/"
         exact
-        render={() => <Home props={props.childProps} />}
+        render={() => <Home loginState={loginState} />}
       />
       <Route
         path="/login"
         exact
-        render={() => <Login props={props.childProps} />}
+        render={() => <Identity loginState={loginState} />}
       />
       <Route
         path="/register"
         exact
-        render={() => <Register props={props.childProps} />}
+        render={() => <Identity loginState={loginState} />}
       />
       <Route
         path="/confirm"
         exact
-        render={() => <ConfirmRegistration props={props.childProps} />}
+        render={() => <Identity loginState={loginState} />}
       />
       <Route
         path="/newhaul"
         exact
-        render={() => <HaulInput props={props.childProps} />}
+        render={() => <HaulInput loginState={loginState} />}
       />
       {/* Finally, catch all unmatched routes */}
       <Route component={NotFound} />
@@ -44,14 +44,14 @@ function Routes(props) {
 }
 
 Routes.propTypes = {
-  childProps: PropTypes.shape({
+  loginState: PropTypes.shape({
     isAuthenticated: PropTypes.bool,
     userHasAuthenticated: PropTypes.func,
   }),
 };
 
 Routes.defaultProps = {
-  childProps: {
+  loginState: {
     isAuthenticated: false,
     userHasAuthenticated: () => false,
   },

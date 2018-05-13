@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import stylePropType from 'react-style-proptype';
 import { Auth } from 'aws-amplify';
 import { validate as validateEmail } from 'email-validator';
 
@@ -6,38 +8,6 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
-
-const styles = {
-  main: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    display: 'block',
-    textAlign: 'center',
-  },
-  form: {
-    display: 'inline-block',
-    borderTop: '4px solid #00BCD4',
-    borderRadius: '4px',
-    boxShadow: '3px 3px 5px rgba(0,0,0,0.15)',
-    backgroundColor: 'white',
-    padding: '1em',
-    marginBottom: '1em',
-    textAlign: 'center',
-  },
-  input: {
-    display: 'block',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  button: {
-    marginLeft: '0.25em',
-    marginRight: '0.25em',
-  },
-  reset: {
-    active: { color: '#777' },
-    disabled: { color: '#AAA' },
-  },
-};
 
 const initialState = {
   username: '',
@@ -96,13 +66,12 @@ class Register extends React.Component {
       });
 
       // Update state with the returned user object
-      console.log(newUser);
       this.setState({
         newUser,
       });
     } catch (e) {
-      // Handle an error somehow.
-      console.error(e);
+      // Pass error to parent component.
+      this.props.handleError(e);
     }
 
     // Remove loading indicator
@@ -132,8 +101,9 @@ class Register extends React.Component {
       props.userHasAuthenticated(true);
       props.history.push('/');
     } catch (e) {
-      console.error(e);
+      // Pass error to parent component.
       this.setState({ isLoading: false });
+      this.props.handleError(e);
     }
   }
 
@@ -178,6 +148,7 @@ class Register extends React.Component {
    * Render registration form
    */
   renderForm() {
+    const { styles } = this.props;
     const {
       username,
       password,
@@ -186,55 +157,60 @@ class Register extends React.Component {
     } = this.state;
 
     return (
-      <div style={styles.form}>
-        <h2>Register</h2>
-        <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
-          <TextField
-            floatingLabelText="Email"
-            hintText="An address you can verify"
-            name="username"
-            value={username}
-            onChange={this.handleChange}
-            style={styles.input}
-          />
-          <TextField
-            floatingLabelText="Password"
-            hintText="Don't tell anyone!"
-            name="password"
-            type="password"
-            value={password}
-            onChange={this.handleChange}
-            style={styles.input}
-          />
-          <TextField
-            floatingLabelText="Confirm Password"
-            hintText="Same as above"
-            name="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={this.handleChange}
-            style={styles.input}
-          />
-          <div style={styles.buttonContainer}>
-            <FlatButton
-              label="Clear"
-              type="reset"
-              disabled={!(username || password)}
-              style={styles.button}
-              labelStyle={(username || password) ? styles.reset.active : styles.reset.disabled}
-              backgroundColor="#FFFFFF"
-              hoverColor="#EEEEEE"
-            />
-            <RaisedButton
-              label="Log In"
-              primary
-              type="submit"
-              disabled={!this.validateForm()}
-              style={styles.button}
-            />
-            {isLoading ? <CircularProgress /> : null}
+      <div style={styles.main}>
+        <div style={styles.card}>
+          <div style={styles.form}>
+            <h2>Register</h2>
+            <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+              <TextField
+                floatingLabelText="Email"
+                hintText="An address you can verify"
+                name="username"
+                value={username}
+                onChange={this.handleChange}
+                style={styles.input}
+              />
+              <TextField
+                floatingLabelText="Password"
+                hintText="Don't tell anyone!"
+                name="password"
+                type="password"
+                value={password}
+                onChange={this.handleChange}
+                style={styles.input}
+              />
+              <TextField
+                floatingLabelText="Confirm Password"
+                hintText="Same as above"
+                name="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={this.handleChange}
+                style={styles.input}
+              />
+              <div style={styles.buttonContainer}>
+                <FlatButton
+                  label="Clear"
+                  type="reset"
+                  disabled={!(username || password)}
+                  style={styles.button}
+                  labelStyle={(username || password) ? styles.reset.active : styles.reset.disabled}
+                  backgroundColor="#FFFFFF"
+                  hoverColor="#EEEEEE"
+                />
+                <RaisedButton
+                  label="Log In"
+                  primary
+                  type="submit"
+                  disabled={!this.validateForm()}
+                  style={styles.button}
+                />
+                {isLoading ? <CircularProgress /> : null}
+              </div>
+            </form>
           </div>
-        </form>
+          {this.props.result}
+        </div>
       </div>
     );
   }
@@ -244,6 +220,7 @@ class Register extends React.Component {
    * Render confirm registration form
    */
   renderConfirmationForm() {
+    const { styles } = this.props;
     const {
       confirmationCode,
       isLoading,
@@ -279,6 +256,8 @@ class Register extends React.Component {
 
 
   render() {
+    const { styles } = this.props;
+
     return (
       <div style={styles.main}>
         {this.state.newUser === null ? this.renderForm() : this.renderConfirmationForm()}
@@ -286,5 +265,26 @@ class Register extends React.Component {
     );
   }
 }
+
+Register.propTypes = {
+  styles: PropTypes.shape({
+    main: stylePropType,
+    form: stylePropType,
+    input: stylePropType,
+    button: stylePropType,
+    reset: PropTypes.shape({
+      active: stylePropType,
+      disabled: stylePropType,
+    }),
+  }),
+  handleError: PropTypes.func,
+  result: PropTypes.element,
+};
+
+Register.defaultProps = {
+  styles: null,
+  handleError: null,
+  result: null,
+};
 
 export default Register;

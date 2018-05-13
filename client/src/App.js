@@ -209,7 +209,7 @@ class App extends Component {
           {loginDisplay}
 
           <div style={styles.main}>
-            <Routes childProps={childProps} />
+            <Routes loginState={childProps} />
           </div>
         </div>
       </MuiThemeProvider>
