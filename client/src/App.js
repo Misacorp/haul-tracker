@@ -24,7 +24,7 @@ import Routes from './Routes';
 
 const styles = {
   main: {
-    maxWidth: '800px',
+    // maxWidth: '800px',
     marginLeft: 'auto',
     marginRight: 'auto',
   },
@@ -92,7 +92,9 @@ class App extends Component {
    * @param {boolean} authenticated Is the user authenticated?
    */
   userHasAuthenticated(authenticated) {
-    this.setState({ isAuthenticated: authenticated });
+    return new Promise((resolve) => {
+      this.setState({ isAuthenticated: authenticated }, resolve());
+    });
   }
 
 

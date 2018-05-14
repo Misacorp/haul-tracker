@@ -24,6 +24,13 @@ class Register extends React.Component {
     this.handleReset = this.handleReset.bind(this);
   }
 
+  /**
+   * Reset error object passed to parent when this component mounts.
+   */
+  componentWillMount() {
+    this.props.handleError(null);
+  }
+
 
   /**
    * Handle changes in text inputs
@@ -159,7 +166,7 @@ class Register extends React.Component {
                   hoverColor="#EEEEEE"
                 />
                 <RaisedButton
-                  label="Log In"
+                  label="Register"
                   primary
                   type="submit"
                   disabled={!this.validateForm()}
@@ -198,6 +205,7 @@ Register.propTypes = {
   }),
   handleChange: PropTypes.func,
   handleError: PropTypes.func,
+  clearResult: PropTypes.func,
   resetForm: PropTypes.func,
   result: PropTypes.element,
   history: PropTypes.shape({
@@ -211,6 +219,7 @@ Register.defaultProps = {
   styles: null,
   handleChange: null,
   handleError: null,
+  clearResult: null,
   resetForm: null,
   result: null,
   history: {

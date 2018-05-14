@@ -85,6 +85,7 @@ class Identity extends React.Component {
     this.clearResult = this.clearResult.bind(this);
   }
 
+
   /**
    * Resets form fields to their initial states.
    */
@@ -132,48 +133,53 @@ class Identity extends React.Component {
   handleError(e) {
     console.error(e);
 
-    let newResult = {
-      message: e.message,
-      isError: true,
-    };
+    if (e && e.message) {
+      let newResult = {
+        message: e.message,
+        isError: true,
+      };
 
-    // Set next action based on error received.
-    switch (e.code) {
-      case 'UserNotFoundException':
-        // User was not found. Get them to the registration page
-        newResult = {
-          ...newResult,
-          recommendation: 'Create an account to start tracking your hauls.',
-          action: 'Register',
-          onClick: () => {
-            this.clearResult()
-              .then(() => this.props.history.push('/register'));
-          },
-        };
-        break;
-      case 'UserNotConfirmedException':
-        // User has signed up but not confirmed their registration
-        // Give them a chance to input confirmation code
-        newResult = {
-          ...newResult,
-          recommendation: 'Check your email for a verification code to confirm your registration.',
-          action: 'Enter code',
-          onClick: () => {
-            this.clearResult()
-              .then(() => this.props.history.push('/confirm'));
-          },
-        };
-        break;
-      case 'CodeMismatchException':
-        // Confirmation code was wrong.
-        // Cognito's error message is sufficient enough.
-        break;
-      default:
-        // Default case just shows Cognito's error response message as defined above.
-        break;
+      // Set next action based on error received.
+      switch (e.code) {
+        case 'UserNotFoundException':
+          // User was not found. Get them to the registration page
+          newResult = {
+            ...newResult,
+            recommendation: 'Create an account to start tracking your hauls.',
+            action: 'Register',
+            onClick: () => {
+              this.clearResult()
+                .then(() => this.props.history.push('/register'));
+            },
+          };
+          break;
+        case 'UserNotConfirmedException':
+          // User has signed up but not confirmed their registration
+          // Give them a chance to input confirmation code
+          newResult = {
+            ...newResult,
+            recommendation: 'Check your email for a verification code to confirm your registration.',
+            action: 'Enter code',
+            onClick: () => {
+              this.clearResult()
+                .then(() => this.props.history.push('/confirm'));
+            },
+          };
+          break;
+        case 'CodeMismatchException':
+          // Confirmation code was wrong.
+          // Cognito's error message is sufficient enough.
+          break;
+        default:
+          // Default case just shows Cognito's error response message as defined above.
+          break;
+      }
+
+      this.setState({ result: newResult });
+    } else {
+      // Reset result
+      this.setState({ result: initialState.result });
     }
-
-    this.setState({ result: newResult });
   }
 
 
@@ -208,12 +214,14 @@ class Identity extends React.Component {
         return (
           <ConfirmRegistration
             username={this.state.username}
+            password={this.state.password}
             confirmationCode={this.state.confirmationCode}
             result={this.state.result.message ?
               <IdentityResult result={this.state.result} />
               : null}
             loginState={this.props.loginState}
             styles={styles}
+            history={this.props.history}
             handleChange={this.handleChange}
             handleError={this.handleError}
             clearResult={this.clearResult}

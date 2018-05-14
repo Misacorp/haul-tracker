@@ -23,6 +23,14 @@ class Login extends React.Component {
 
 
   /**
+   * Reset error object passed to parent when this component mounts.
+   */
+  componentWillMount() {
+    this.props.handleError(null);
+  }
+
+
+  /**
    * Handle submission of the form
    * @param {object} event Form submit event
    */
@@ -38,8 +46,8 @@ class Login extends React.Component {
       await Auth.signIn(username, password);
 
       // Update app authentication state and redirect to home
-      this.props.loginState.userHasAuthenticated(true);
-      this.props.history.push('/');
+      this.props.loginState.userHasAuthenticated(true)
+        .then(() => this.props.history.push('/')); // Cannot update during an existing state transition!
     } catch (e) {
       // Pass error to parent component.
       this.setState({ isLoading: false });
@@ -137,6 +145,7 @@ Login.propTypes = {
   password: PropTypes.string,
   handleChange: PropTypes.func,
   handleError: PropTypes.func,
+  clearResult: PropTypes.func,
   history: PropTypes.shape({
     push: PropTypes.func,
   }),
@@ -163,6 +172,7 @@ Login.defaultProps = {
   password: '',
   handleChange: null,
   handleError: null,
+  clearResult: null,
   history: {
     push: null,
   },

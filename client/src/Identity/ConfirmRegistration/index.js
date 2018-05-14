@@ -21,6 +21,14 @@ class ConfirmRegistration extends React.Component {
 
 
   /**
+   * Reset error object passed to parent when this component mounts.
+   */
+  componentWillMount() {
+    this.props.handleError(null);
+  }
+
+
+  /**
    * Handle what happens when confirmation code is submitted
    * @param {object} event Form submit event
    */
@@ -28,7 +36,6 @@ class ConfirmRegistration extends React.Component {
     event.preventDefault();
 
     const { username, password, confirmationCode } = this.props;
-    const { props } = this.props; // Destructure props object
 
     // Show loading indicator
     this.setState({ isLoading: true });
@@ -40,8 +47,8 @@ class ConfirmRegistration extends React.Component {
       await Auth.signIn(username, password);
 
       // Update app authentication state and redirect to homepage
-      props.loginState.userHasAuthenticated(true);
-      props.history.push('/');
+      this.props.loginState.userHasAuthenticated(true)
+        .then(() => this.props.history.push('/'));
     } catch (e) {
       this.setState({ isLoading: false });
       this.props.handleError(e);
@@ -133,6 +140,14 @@ ConfirmRegistration.propTypes = {
   }),
   handleError: PropTypes.func,
   result: PropTypes.element,
+  clearResult: PropTypes.func,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+  loginState: PropTypes.shape({
+    isAuthenticated: PropTypes.bool,
+    userHasAuthenticated: PropTypes.func,
+  }),
 };
 
 ConfirmRegistration.defaultProps = {
@@ -142,6 +157,14 @@ ConfirmRegistration.defaultProps = {
   styles: null,
   handleError: null,
   result: null,
+  clearResult: null,
+  history: {
+    push: null,
+  },
+  loginState: {
+    isAuthenticated: false,
+    userHasAuthenticated: null,
+  },
 };
 
 export default ConfirmRegistration;
