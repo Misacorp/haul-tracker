@@ -14,6 +14,7 @@ import Divider from 'material-ui/Divider';
 // Icons
 import AddIcon from 'material-ui/svg-icons/content/add-circle';
 import HomeIcon from 'material-ui/svg-icons/action/home';
+import LinearProgress from 'material-ui/LinearProgress';
 import LoginIcon from 'material-ui/svg-icons/action/input';
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app';
 import LockIcon from 'material-ui/svg-icons/action/lock';
@@ -39,6 +40,9 @@ const styles = {
   menuItem: {
     paddingLeft: '16px',
   },
+  loginVerifier: {
+    backgroundColor: 'rgb(199, 249, 255)',
+  },
 };
 
 
@@ -53,14 +57,25 @@ class App extends Component {
     this.handleToggle = this.handleToggle.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.verifySession = this.verifySession.bind(this);
     this.userHasAuthenticated = this.userHasAuthenticated.bind(this);
   }
 
 
   /**
-   * Check if session is still valid on component mount (?)
+   * Check if session is still valid on component mount
    */
-  async componentDidMount() {
+  componentDidMount() {
+    // Remove this timeout once debugging is done.
+    // setTimeout(() => this.verifySession(), 2000);
+    this.verifySession();
+  }
+
+
+  /**
+   * Check if user has logged in and session is still valid.
+   */
+  async verifySession() {
     try {
       if (await Auth.currentSession()) {
         this.userHasAuthenticated(true);
@@ -74,18 +89,28 @@ class App extends Component {
     this.setState({ isAuthenticating: false });
   }
 
+
+  /**
+   * Handle drawer toggle.
+   */
   handleToggle() {
     this.setState({ drawerOpen: !this.state.drawerOpen });
   }
 
+
+  /**
+   * Handles drawer closing and optionally redirects to new path.
+   * @param {string} newPath Optional route to redirect to.
+   */
   handleClose(newPath) {
     // Close drawer
     this.setState({ drawerOpen: false });
     // Navigate to newPath if we're not already there
-    if (this.props.location.pathname !== newPath) {
+    if (newPath && this.props.location.pathname !== newPath) {
       this.props.history.push(newPath);
     }
   }
+
 
   /**
    * Sets user authentication state
@@ -106,8 +131,7 @@ class App extends Component {
     await Auth.signOut();
 
     this.userHasAuthenticated(false);
-    this.props.history.push('/');
-    this.handleClose();
+    this.handleClose('/');
   }
 
 
@@ -123,13 +147,19 @@ class App extends Component {
 
     let loginDisplay = (
       <p>
-        <LockIcon /> Not logged in
+        <OpenLockIcon /> Verifying session...
       </p>
     );
     if (this.state.isAuthenticated) {
       loginDisplay = (
         <p>
           <OpenLockIcon /> Logged in
+        </p>
+      );
+    } else if (!this.state.isAuthenticating) {
+      loginDisplay = (
+        <p>
+          <LockIcon /> Not logged in
         </p>
       );
     }
@@ -158,7 +188,11 @@ class App extends Component {
     // Menu partial to render when user is logged in
     const loggedInMenu = (
       <div>
-        <MenuItem onClick={() => this.handleClose('/newhaul')} style={pathname === '/newhaul' ? styles.active : null}>
+        <MenuItem
+          onClick={() => this.handleClose('/newhaul')}
+          style={pathname === '/newhaul' ? styles.active : null}
+          rightIcon={<AddIcon />}
+        >
             New haul
         </MenuItem>
         <Divider style={styles.divider} />
@@ -181,11 +215,18 @@ class App extends Component {
             onRequestChange={drawerOpen => this.setState({ drawerOpen })}
           >
             <h2 style={styles.menuItem}>Haul Tracker</h2>
-            <MenuItem onClick={() => this.handleClose('/')} style={pathname === '/' ? styles.active : null} >
+            <MenuItem
+              onClick={() => this.handleClose('/')}
+              style={pathname === '/' ? styles.active : null}
+              rightIcon={<HomeIcon />}
+            >
               Home
             </MenuItem>
 
-            {this.state.isAuthenticated ? loggedInMenu : loggedOutMenu}
+            {this.state.isAuthenticated && !this.state.isAuthenticating ?
+              loggedInMenu :
+              loggedOutMenu
+            }
           </Drawer>
 
           <AppBar
@@ -207,6 +248,17 @@ class App extends Component {
                 />
             }
           />
+
+          {
+            // The page checks if the user's session is still valid on page load. Show an
+            // indeterminate progress bar while this check happens.
+            this.state.isAuthenticating ?
+              <LinearProgress
+                mode="indeterminate"
+                style={styles.loginVerifier}
+              /> :
+              null
+          }
 
           {loginDisplay}
 

@@ -85,6 +85,15 @@ class Identity extends React.Component {
     this.clearResult = this.clearResult.bind(this);
   }
 
+  componentDidMount() {
+    // Check if user has already logged in.
+    if (this.props.loginState.isAuthenticated) {
+      // Play some nice welcome animation or something?
+      // Redirect to home
+      this.props.history.push('/');
+    }
+  }
+
 
   /**
    * Resets form fields to their initial states.
@@ -184,13 +193,6 @@ class Identity extends React.Component {
 
 
   render() {
-    // Check if user has already logged in.
-    if (this.props.loginState.isAuthenticated) {
-      // Play some nice welcome animation or something?
-      // Redirect to home
-      this.props.history.push('/');
-    }
-
     // Initially render a component based on route.
     switch (this.props.location.pathname) {
       case '/register':
