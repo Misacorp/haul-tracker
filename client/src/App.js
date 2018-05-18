@@ -67,8 +67,8 @@ class App extends Component {
    */
   componentDidMount() {
     // Remove this timeout once debugging is done.
-    // setTimeout(() => this.verifySession(), 2000);
-    this.verifySession();
+    setTimeout(() => this.verifySession(), 4000);
+    // this.verifySession();
   }
 
 
@@ -82,7 +82,7 @@ class App extends Component {
       }
     } catch (e) {
       if (e !== 'No current user') {
-        alert(e);
+        console.error('Could not verify current user session due to an unknown reason.', e);
       }
     }
 

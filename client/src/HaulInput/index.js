@@ -5,13 +5,11 @@ import SendIcon from 'material-ui/svg-icons/content/send';
 
 import Haul from './dataTypes/Haul';
 import Voyage from './dataTypes/Voyage';
-import Identity from './dataTypes/Identity';
 
 import Result from './Result';
 import Story from './Story';
 import VoyagePicker from './VoyagePicker';
 import HaulPicker from './HaulPicker';
-import IdentityInput from './IdentityInput';
 
 import submitHaul from './submitHaul';
 
@@ -21,6 +19,7 @@ const styles = {
     marginRight: 'auto',
     padding: '1em',
     backgroundColor: '#F0F0F0',
+    maxWidth: '800px',
   },
   state: {
     marginLeft: 'auto',
@@ -54,7 +53,6 @@ const styles = {
 const initialState = {
   voyage: new Voyage(),
   haul: new Haul(),
-  identity: new Identity(),
   error: null,
   response: null,
   isSending: false,
@@ -119,12 +117,11 @@ class HaulInput extends React.Component {
    */
   handleChange(obj) {
     // Get state's properties from incoming change
-    const { haul, identity, voyage } = obj;
+    const { haul, voyage } = obj;
 
     // Update state if a value was changed
     const newState = {
       ...this.state,
-      identity: identity ? new Identity(identity) : this.state.identity,
       haul: haul ? new Haul(haul) : this.state.haul,
       voyage: voyage ? new Voyage(voyage) : this.state.voyage,
     };
@@ -133,14 +130,13 @@ class HaulInput extends React.Component {
 
 
   render() {
-    const { haul, identity, voyage } = this.state;
+    const { haul, voyage } = this.state;
     const { goldHoarders, orderOfSouls } = haul;
 
     return (
       <div style={styles.main}>
         <VoyagePicker voyage={voyage} handleChange={this.handleChange} />
         <HaulPicker haul={haul} company={voyage.company} handleChange={this.handleChange} />
-        <IdentityInput identity={identity} handleChange={this.handleChange} />
 
         <Story voyage={this.state.voyage} haul={this.state.haul} />
 
@@ -189,13 +185,6 @@ class HaulInput extends React.Component {
               Villainous: {orderOfSouls.villainous} <br />
             </p>
           }
-
-          <Divider />
-
-          <p>
-            Username: {identity.username} <br />
-            Password: {identity.password}
-          </p>
         </div>
       </div>
 

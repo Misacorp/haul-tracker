@@ -26,6 +26,11 @@ const styles = {
   },
   waiting: {
     borderTop: 'none',
+    padding: '2em',
+  },
+  waitingMessage: {
+    margin: 0,
+    padding: 0,
   },
 };
 
@@ -59,8 +64,8 @@ function Result(props) {
     return (
       <div style={props.style}>
         <div style={{ ...styles.container, ...styles.waiting }}>
-          <p><CircularProgress mode="indeterminate" /></p>
-          Sending data...
+          <CircularProgress mode="indeterminate" />
+          <p style={styles.waitingMessage}>Sending data...</p>
         </div>
       </div>
     );
