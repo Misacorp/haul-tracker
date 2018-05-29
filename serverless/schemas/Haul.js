@@ -1,7 +1,20 @@
 'use strict';
 
 /**
- * Haul class
+ * Haul class.
+ *
+ * Has the following properties:
+ *  - castaway:  number, non-negative
+ *  - seafarer:  number, non-negative
+ *  - marauder:  number, non-negative
+ *  - captains:  number, non-negative
+ *  - grogs: number, non-negative
+ *  - sorrow:  number, non-negative
+ *  - foul:  number, non-negative
+ *  - disgraced:  number, non-negative
+ *  - hateful:  number, non-negative
+ *  - villainous:  number, non-negative
+ *
  * @constructor
  * @param {object} data haul data.
  * @param {string} data.company Which company issued the voyage.
@@ -11,28 +24,41 @@
 function Haul(data) {
   // Verify that constructor data was provided.
   if (data) {
-    // Verify that a company was provided and it is one of the accepted values.
-    if (data.hasOwnProperty('company')) {
-      const allowedCompanies = ['goldHoarders', 'orderOfSouls'];
-      if (allowedCompanies.indexOf(data.company) > -1) {
-        this.company = data.company;
-      } else throw new Error('haul.company is not an accepted value');
-    } else throw new Error('haul.company not provided');
+    // Build an array of allowed keys
+    const treasures = [
+      'castaway',
+      'seafarer',
+      'marauder',
+      'captains',
+      'grogs',
+      'sorrow',
+      'foul',
+      'disgraced',
+      'hateful',
+      'villainous',
+    ];
 
-    // Verify that a rank was provided and it is a multiple of five in the range [0,50]
-    if (data.hasOwnProperty('rank')) {
-      if (data.rank >= 0 && data.rank <= 50 && data.rank % 5 === 0) {
-        this.rank = data.rank;
-      } else throw new Error('haul.rank is not divisible by 5 or in the range [0,50]');
-    } else throw new Error('haul.rank not provided')
+    // For each key in data, check if it exists in the allowed keys.
+    const validKeys = Object.keys(data).filter((item) => {
+      console.log(item);
+      if (treasures.indexOf(item) > -1) return true;
+      return false;
+    });
 
-    // Verify that completed was provided and it is a boolean
-    if (data.hasOwnProperty('completed')) {
-      if (typeof data.completed === 'boolean') {
-        this.completed = data.completed;
-      } else throw new Error('haul.completed is not a boolean');
-    } else throw new Error('haul.completed not provided');
-  } else throw new Error('No data provided to haul constructor');
+    // Use valid keys to get the correct data.
+    for (let i = 0; i < validKeys.length; i += 1) {
+      const key = validKeys[i];
+      const value = data[key];
+
+      // Values are numbers
+      if (typeof value === 'number') {
+        // Values are non-negative integers
+        if (value >= 0 && value === parseInt(value, 10)) {
+          this[key] = data[key];
+        } else throw new RangeError(`haul.${key} is out of range or not an integer`);
+      } else throw new TypeError(`haul.${key} is of type ${typeof value}, expected a number`);
+    }
+  }
 }
 
 module.exports = Haul;
