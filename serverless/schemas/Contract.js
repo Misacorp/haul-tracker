@@ -22,23 +22,23 @@ function Contract(data) {
       const allowedCompanies = ['goldHoarders', 'orderOfSouls'];
       if (allowedCompanies.indexOf(data.company) > -1) {
         this.company = data.company;
-      } else throw new Error('haul.company is not an accepted value');
-    } else throw new Error('haul.company not provided');
+      } else throw new Error('contract.company is not an accepted value');
+    } else throw new Error('contract.company not provided');
 
     // Verify that a rank was provided and it is a multiple of five in the range [0,50]
     if (Object.prototype.hasOwnProperty.call(data, 'rank')) {
       if (data.rank >= 0 && data.rank <= 50 && data.rank % 5 === 0) {
         this.rank = data.rank;
-      } else throw new Error('haul.rank is not divisible by 5 or in the range [0,50]');
-    } else throw new Error('haul.rank not provided');
+      } else throw new Error('contract.rank is not divisible by 5 or in the range [0,50]');
+    } else throw new Error('contract.rank not provided');
 
     // Verify that completed was provided and it is a boolean
     if (Object.prototype.hasOwnProperty.call(data, 'completed')) {
       if (typeof data.completed === 'boolean') {
         this.completed = data.completed;
-      } else throw new Error('haul.completed is not a boolean');
-    } else throw new Error('haul.completed not provided');
-  } else throw new Error('No data provided to haul constructor');
+      } else throw new Error('contract.completed is not a boolean');
+    } else throw new Error('contract.completed not provided');
+  } else throw new Error('No data provided to contract constructor');
 }
 
 module.exports = Contract;

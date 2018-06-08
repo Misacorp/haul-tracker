@@ -40,10 +40,11 @@ function Haul(data) {
 
     // For each key in data, check if it exists in the allowed keys.
     const validKeys = Object.keys(data).filter((item) => {
-      console.log(item);
       if (treasures.indexOf(item) > -1) return true;
       return false;
     });
+
+    let itemCount = 0;
 
     // Use valid keys to get the correct data.
     for (let i = 0; i < validKeys.length; i += 1) {
@@ -55,9 +56,15 @@ function Haul(data) {
         // Values are non-negative integers
         if (value >= 0 && value === parseInt(value, 10)) {
           this[key] = data[key];
+          itemCount += value;
         } else throw new RangeError(`haul.${key} is out of range or not an integer`);
       } else throw new TypeError(`haul.${key} is of type ${typeof value}, expected a number`);
     }
+
+    // itemCount can't be 0 (hauls are not empty).
+    if (itemCount < 1 || validKeys.length === 0) throw new Error('Haul cannot be empty');
+  } else {
+    throw new TypeError('No data provided to Haul constructor');
   }
 }
 

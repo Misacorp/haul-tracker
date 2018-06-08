@@ -18,7 +18,7 @@ const create = (event, context, callback) => {
   const data = JSON.parse(event.body);
 
   // Set username
-  let username = data.username;
+  let { username } = data;
   if (!username) {
     // Assign the user a random username.
     // animalName returns a promise so we'll need to wait for these to resolve later.
@@ -26,7 +26,7 @@ const create = (event, context, callback) => {
   }
 
   // Set password
-  let password = data.password;
+  let { password } = data;
   if (!password) {
     // Assign the user a random password.
     // animalName returns a promise so we'll need to wait for these to resolve later.
@@ -42,11 +42,11 @@ const create = (event, context, callback) => {
       // Username and password resolved into the 'values' parameter: [username, password]
       // Set parameters for DynamoDB request.
       const params = {
-        TableName: 'users',       // Which table to use
+        TableName: 'users', // Which table to use
         Item: new User({
           id: uuid(),
-          username: values[0],    // Username from resolved promise values
-          password: values[1],    // Password from resolved promise values
+          username: values[0], // Username from resolved promise values
+          password: values[1], // Password from resolved promise values
           createdAt: timestamp,
           updatedAt: timestamp,
         }),
