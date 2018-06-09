@@ -3,6 +3,7 @@
 const AWS = require('aws-sdk');
 const Voyage = require('../schemas/Voyage');
 
+const db = new AWS.DynamoDB.DocumentClient();
 
 /**
  * Builds an HTTP error to return
@@ -35,7 +36,6 @@ const returnError = (code, errorObject, callback) => {
  * @param {function} callback Callback function for when execution has finished
  */
 const create = (event, context, callback) => {
-  // Log that event yo
   const { body } = event;
 
   // Check that body exists
@@ -43,22 +43,42 @@ const create = (event, context, callback) => {
     // Create a voyage and handle its errors
     const { voyage } = JSON.parse(body);
 
+    // Check that voyage exists
     if (voyage) {
+      // Extract voyage components and check that they exist
       const { owner, contract, haul } = voyage;
       if (owner && contract && haul) {
-        console.log(voyage);
         try {
+          // Create voyage object from given data
           const thisVoyage = new Voyage(owner, contract, haul);
-          console.log(thisVoyage);
-          const response = {
-            statusCode: 200,
-            body: JSON.stringify(thisVoyage),
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-            },
+
+          // Set DynamoDB parameters
+          const params = {
+            TableName: 'voyages',
+            Item: thisVoyage,
           };
-          callback(null, response);
+
+          // Add voyage to DynamoDB
+          db.put(params, (error, result) => {
+            if (error) {
+              // Error occured when putting data into DB.
+              console.error(error);
+              returnError(500, error, callback);
+            }
+
+            console.log('[SUCCESS] Added voyage to DynamoDB', result);
+
+            // Send HTTP response
+            const response = {
+              statusCode: 200,
+              body: JSON.stringify(result),
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              },
+            };
+            callback(null, response);
+          });
         } catch (e) {
           returnError(400, e, callback);
         }
@@ -74,7 +94,7 @@ const create = (event, context, callback) => {
       returnError(400, error, callback);
     }
   } else {
-    // Request has no body
+    // No request body
     const error = new Error('Request has no body');
     returnError(400, error, callback);
   }
