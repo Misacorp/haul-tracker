@@ -16,7 +16,7 @@ const returnError = (code, errorObject, callback) => {
   const response = {
     statusCode: code,
     body: JSON.stringify({
-      errorMessage: errorObject.message,
+      message: errorObject.message,
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -42,28 +42,35 @@ const create = (event, context, callback) => {
   if (body) {
     // Create a voyage and handle its errors
     const { voyage } = JSON.parse(body);
-    const { owner, contract, haul } = voyage;
 
     if (voyage) {
-      console.log(voyage);
-      try {
-        const thisVoyage = new Voyage(owner, contract, haul);
-        console.log(thisVoyage);
-        const response = {
-          statusCode: 200,
-          body: JSON.stringify(thisVoyage),
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-        };
-        callback(null, response);
-      } catch (e) {
-        returnError(400, e, callback);
+      const { owner, contract, haul } = voyage;
+      if (owner && contract && haul) {
+        console.log(voyage);
+        try {
+          const thisVoyage = new Voyage(owner, contract, haul);
+          console.log(thisVoyage);
+          const response = {
+            statusCode: 200,
+            body: JSON.stringify(thisVoyage),
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          };
+          callback(null, response);
+        } catch (e) {
+          returnError(400, e, callback);
+        }
+      } else {
+        // Voyage doesn't have required components
+        // Handle this error in Voyage constructor instead?
+        const error = new Error('Voyage does not include owner, contract or haul');
+        returnError(400, error, callback);
       }
     } else {
       // No voyage in request body
-      const error = new Error('Request body contains no voyage object');
+      const error = new Error('Request does not contain a voyage object');
       returnError(400, error, callback);
     }
   } else {
